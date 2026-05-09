@@ -59,6 +59,26 @@ const MODEL_REVISION = process.env.LLAMACPP_QWEN_REVISION ?? "main";
 const DEFAULT_CTX_SIZE = Number(process.env.LLAMACPP_CTX_SIZE ?? 262144);
 const DEFAULT_MAX_TOKENS = Number(process.env.LLAMACPP_MAX_TOKENS ?? 65536);
 
+// Qwen3.6's model card recommends different sampling defaults for thinking and
+// non-thinking modes. This extension is primarily used for coding-agent work, so
+// use the precise-coding thinking preset when reasoning is enabled.
+const QWEN_THINKING_SAMPLING = {
+	temperature: 0.6,
+	top_p: 0.95,
+	top_k: 20,
+	min_p: 0.0,
+	presence_penalty: 0.0,
+	repeat_penalty: 1.0,
+};
+const QWEN_INSTRUCT_SAMPLING = {
+	temperature: 0.7,
+	top_p: 0.8,
+	top_k: 20,
+	min_p: 0.0,
+	presence_penalty: 1.5,
+	repeat_penalty: 1.0,
+};
+
 const HEARTBEAT_MS = 10_000;
 const LEASE_TTL_MS = 45_000;
 const LOCK_STALE_MS = 60_000;
@@ -1711,13 +1731,15 @@ function usageFromChunkUsage(usage: any, model: Model<any>): AssistantMessage["u
 }
 
 function buildLlamaCppPayload(model: Model<any>, context: Context, options?: SimpleStreamOptions): Record<string, any> {
+	const reasoningEnabled = !!options?.reasoning;
 	const payload: Record<string, any> = {
 		model: model.id,
 		messages: convertMessagesForLlamaCpp(context),
 		stream: true,
 		stream_options: { include_usage: true },
+		...(reasoningEnabled ? QWEN_THINKING_SAMPLING : QWEN_INSTRUCT_SAMPLING),
 		chat_template_kwargs: {
-			enable_thinking: !!options?.reasoning,
+			enable_thinking: reasoningEnabled,
 			preserve_thinking: true,
 		},
 	};
